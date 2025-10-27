@@ -4,17 +4,18 @@ from rest_framework.decorators import APIView, api_view
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from rest_framework import status
-from .serializers import UserSerializer
+from .serializers import UserLoginSerializer, UserSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 
 
+class Index(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, *args, **kwargs):
+        return Response({
+            "message": "Hi welcome the authentication api v1 here you can make register, login you can register using username, email and password and you can login using username and password"
+        }, status=status.HTTP_200_OK)
 
-@api_view(["GET"])
-def index(request, *args, **kwargs):
-    return Response({
-        "message": "Hi welcome the authentication api v1 here you can make register, login you can register using username, email and password and you can login using username and password"
-    }, status=status.HTTP_200_OK)
 
 class UserRegistration(APIView):
     permission_classes = [AllowAny]
@@ -22,8 +23,10 @@ class UserRegistration(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            user_data = UserSerializer(user).data
             token, _ = Token.objects.get_or_create(user=user)
             return Response({
+                "user": user_data,
                 "token": token.key,
                 "message": "User created successfully!"
             }, status=status.HTTP_201_CREATED)
@@ -36,17 +39,18 @@ class UserLogin(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
 
-
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            token, _ = Token.objects.get_or_create(user=user)
             login(request, user)
+            token, _ = Token.objects.get_or_create(user=user)
+            user_data = UserLoginSerializer(user).data
             return Response({
+                "user": user_data,
                 "token": token.key,
                 "message": "Logged in successfully"
             })
         
         return Response({
-            "message": "Invalid email or password"
+            "message": "Invalid username or password"
         }, status=status.HTTP_400_BAD_REQUEST)
         
