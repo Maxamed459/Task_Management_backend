@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from django.contrib.auth import authenticate, login
+from rest_framework.validators import UniqueValidator
 
 class UserSerializer (serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -7,11 +9,13 @@ class UserSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'confirmation']
+        fields = ['id','username', 'email', 'password', 'confirmation', 'date_joined']
 
     def validate(self, data):
         if data["password"] != data["confirmation"]:
             raise serializers.ValidationError("passwords must match")
+        if User.objects.filter(email=data["email"]).exists():
+            raise serializers.ValidationError("email already exists")
         return data
          
 
@@ -23,3 +27,10 @@ class UserSerializer (serializers.ModelSerializer):
             password = validated_data["password"],
         )
         return user
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'date_joined']
+
+    
