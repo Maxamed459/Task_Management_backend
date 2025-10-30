@@ -5,6 +5,7 @@ from rest_framework import generics
 from .serializers import TaskSerializer
 from .models import Task
 import datetime
+from .permissions import IsOwnerOnly
 
 
 @api_view(["GET"])
@@ -14,9 +15,12 @@ def index(request, *args, **kwargs):
     })
 
 
-class TaskCreateAPIView(generics.CreateAPIView):
+class TaskCreateListAPIView(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
+
+    def get_queryset(self):
+        return Task.objects.filter(owner = self.request.user)
 
     def perform_create(self, serializer):
         title = serializer.validated_data.get("title")
@@ -26,15 +30,20 @@ class TaskCreateAPIView(generics.CreateAPIView):
             description = title
         if due_date is None:
             due_date = datetime.date.today()
-        serializer.save(owner=self.request.user, description=description, due_date=due_date)
+        serializer.save(owner=self.request.user, description=description, due_date=due_date)\
 
 
-class ListTaskAPIView(generics.ListAPIView):
-    serializer_class = TaskSerializer
+
+
+class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    permission_classes = [IsOwnerOnly]
 
     def get_queryset(self):
-        user = self.request.user
-        if not user.is_authenticated:
-            return Task.objects.none()
-        return Task.objects.filter(owner=user)
+        return Task.objects.filter(owner = self.request.user)
+
+
+
+
+
