@@ -8,7 +8,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ["owner", "title", "description", "due_date", "priority", "is_completed", "created_at", "updated_at"]
+        fields = ["owner", "id", "title", "description", "due_date", "priority", "is_completed", "created_at", "updated_at"]
 
     def get_owner(self, obj):
         request = self.context.get("request")
