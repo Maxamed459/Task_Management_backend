@@ -43,18 +43,25 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
     'authentication',
     'task'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://192.168.58.1:3000"
 ]
 
 ROOT_URLCONF = 'api.urls'
@@ -129,10 +136,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
-  "DEFAULT_AUTHENTICATION_CLASSES": [
-    "authentication.auth.TokenAuthentication"
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "authentication.auth.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
   ],
   "DEFAULT_PERMISSION_CLASSES": [
-    'rest_framework.permissions.IsAuthenticated'
+      'rest_framework.permissions.IsAuthenticated'
   ]
 }
+
