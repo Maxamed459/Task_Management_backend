@@ -17,7 +17,7 @@ class UserSerializer (serializers.ModelSerializer):
         if User.objects.filter(email=data["email"]).exists():
             raise serializers.ValidationError("email already exists")
         return data
-         
+
 
     def create(self, validated_data):
         validated_data.pop("confirmation")
