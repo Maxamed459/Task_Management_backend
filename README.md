@@ -92,7 +92,7 @@ The API will be available at `http://127.0.0.1:8000/`
 
 ### Base URL
 ```
-http://127.0.0.1:8000/auth/
+http://127.0.0.1:8000/api/auth/
 ```
 
 ### Available Endpoints
@@ -100,7 +100,7 @@ http://127.0.0.1:8000/auth/
 #### 1. **Welcome Message**
 - **GET** `/auth/`
 - **Description**: Welcome endpoint with API information
-- **Authentication**: Not required
+- **Authentication**: required
 - **Response**:
 ```json
 {
