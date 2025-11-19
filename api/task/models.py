@@ -4,9 +4,9 @@ from authentication.models import User
 class Task(models.Model):
 
     PRIORITY_CHOICES = [
-        ("low", "Low"),
-        ("medium", "Medium"),
-        ("high", "High")
+        ("low", "LOW"),
+        ("medium", "MEDIUM"),
+        ("high", "HIGH")
     ]
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="task_owner")
