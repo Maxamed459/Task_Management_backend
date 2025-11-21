@@ -30,11 +30,8 @@ class TaskCreateListAPIView(generics.ListCreateAPIView):
             description = title
         if due_date is None:
             due_date = datetime.date.today()
-        serializer.save(owner=self.request.user, description=description, due_date=due_date)\
-
-
-
-
+        serializer.save(owner=self.request.user, description=description, due_date=due_date)
+        
 class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
